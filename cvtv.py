@@ -11,13 +11,19 @@ import cv2 as cv
 
 
 def augment_detect_corner(image):
+    # convert to format for cornerHarris
     image_gray = np.float32(cv.cvtColor(image, cv.COLOR_BGR2GRAY))
 
+    # mark corners
     BLOCKSIZE = 2
     KSIZE = 3
     K = 0.04
     detected = cv.cornerHarris(image_gray, BLOCKSIZE, KSIZE, K)
 
+    # increase size of markers
+    detected = cv.dilate(detected, None)
+
+    # overlay detected onto image
     THRESHOLD = 0.01
     COLOR = [0, 0, 255]
     image[detected > THRESHOLD * detected.max()] = COLOR
